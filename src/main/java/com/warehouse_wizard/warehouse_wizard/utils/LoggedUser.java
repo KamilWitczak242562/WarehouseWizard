@@ -1,32 +1,27 @@
 package com.warehouse_wizard.warehouse_wizard.utils;
 
-import com.warehouse_wizard.warehouse_wizard.entity.User;
+import com.warehouse_wizard.warehouse_wizard.model.User;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class LoggedUser {
-    private static LoggedUser loggedUser;
 
-    private User user;
-    private ScheduledExecutorService scheduler;
+    private User loggedUser;
 
-    public LoggedUser(User user) {
-        this.user = user;
-        this.scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.schedule(this::logOut, 30, TimeUnit.MINUTES);
-    }
-
-    public static LoggedUser getLoggedUser(User user) {
-        if (loggedUser == null) {
-            loggedUser = new LoggedUser(user);
-        }
+    public User getLoggedUser() {
         return loggedUser;
     }
 
+    public void setLoggedUser(User loggedUser) {
+        this.loggedUser = loggedUser;
+    }
+
     public void logOut() {
-        this.user = null;
-        scheduler.shutdown();
+        this.loggedUser = null;
     }
 }

@@ -1,60 +1,47 @@
 package com.warehouse_wizard.warehouse_wizard.controller;
 
-import com.mysql.cj.log.Log;
-import com.warehouse_wizard.warehouse_wizard.entity.User;
-import com.warehouse_wizard.warehouse_wizard.repository.UserRepository;
+import com.warehouse_wizard.warehouse_wizard.model.User;
+import com.warehouse_wizard.warehouse_wizard.service.UserService;
 import com.warehouse_wizard.warehouse_wizard.utils.LoggedUser;
-import org.mindrot.jbcrypt.BCrypt;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@AllArgsConstructor
 public class UserController {
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository repository;
+    @GetMapping("/getUserById")
+    public @ResponseBody User getUserById(@RequestParam int id) {
+        return userService.getUserById(id);
+    }
 
-    private LoggedUser loggedUser;
+    @GetMapping("/getUsers")
+    public @ResponseBody Map<String, Integer> getUsers() {
+        return userService.getAllUsers();
+    }
 
-    @GetMapping("/get")
-    public @ResponseBody ResponseEntity<User> getUserById(@RequestParam int id) {
-        Optional<User> userOptional = repository.findById(id);
-
-        return userOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/getUserByEmail")
+    public @ResponseBody User getUserById(@RequestParam String email) {
+        return userService.getUserByEmail(email);
     }
 
     @PostMapping("/registration")
-    public @ResponseBody ResponseEntity<String> registerUser(@RequestBody Map<String, String> credentials) {
-        if (repository.findByEmail(credentials.get("email")) != null) {
-            return ResponseEntity.badRequest().build();
-        }
-        User user = new User();
-        user.setEmail(credentials.get("email"));
-        user.setPassword(BCrypt.hashpw(credentials.get("password"), BCrypt.gensalt()));
-        repository.save(user);
-        this.loggedUser = LoggedUser.getLoggedUser(user);
-        return ResponseEntity.ok().build();
+    public @ResponseBody User registerUser(@RequestBody Map<String, String> credentials) {
+        return userService.registerUser(credentials.get("email"), credentials.get("password"));
     }
 
     @GetMapping("/login")
-    public @ResponseBody ResponseEntity<String> loginUser(@RequestBody Map<String, String> credentials) {
-        if (repository.findByEmail(credentials.get("email")) == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        User user = repository.findByEmail(credentials.get("email"));
-        if (BCrypt.checkpw(credentials.get("password"), user.getPassword())) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+    public @ResponseBody User loginUser(@RequestBody Map<String, String> credentials) {
+        return userService.logInUser(credentials.get("email"), credentials.get("password"));
     }
 
     @RequestMapping("/logout")
-    public void logoutUser() {
-        this.loggedUser.logOut();
+    public @ResponseBody boolean logoutUser() {
+        return userService.logOutUser();
     }
 }
