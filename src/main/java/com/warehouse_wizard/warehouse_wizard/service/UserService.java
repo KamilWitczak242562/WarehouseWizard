@@ -18,8 +18,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
-    private LoggedUser loggedUser;
+    private final UserRepository userRepository;
+    private final LoggedUser loggedUser;
 
     public User registerUser(String email, String password) {
         if (userRepository.findByEmail(email) != null) {
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public User getUserById(int id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElse(null);
     }
 
     public Map<String, Integer> getAllUsers() {
@@ -76,10 +76,6 @@ public class UserService {
             throw new WrongArgumentException("User is not logged in");
         }
         loggedUser.logOut();
-        if (loggedUser.getLoggedUser() == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return loggedUser.getLoggedUser() == null;
     }
 }

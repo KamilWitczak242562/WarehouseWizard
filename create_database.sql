@@ -1,6 +1,6 @@
 create database warehouse;
 use warehouse;
-
+SET autocommit = 1;
 create table users (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -31,3 +31,21 @@ CREATE TABLE Transaction (
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
+
+INSERT INTO Category (name, description) VALUES
+                                             ('Electronics', 'Electronic devices and gadgets'),
+                                             ('Clothing', 'Clothes and fashion accessories'),
+                                             ('Home & Garden', 'Items for home and garden');
+
+INSERT INTO Product (category_id, name, description, price, stock_quantity) VALUES
+                                                                                (1, 'Smartphone', 'High-end smartphone with advanced features', 899.99, 50),
+                                                                                (1, 'Laptop', 'Powerful laptop for productivity', 1299.99, 30),
+                                                                                (2, 'T-shirt', 'Comfortable cotton T-shirt', 19.99, 100),
+                                                                                (3, 'Coffee Maker', 'Automatic coffee maker for home', 79.99, 20);
+
+INSERT INTO Transaction (product_id, quantity, transaction_type) VALUES
+                                                                     (1, 10, 'IN'),
+                                                                     (2, 5, 'IN'),
+                                                                     (3, 15, 'OUT'),
+                                                                     (4, 8, 'OUT');
+
