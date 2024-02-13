@@ -1,5 +1,7 @@
 package com.warehouse_wizard.warehouse_wizard.controller;
 
+import com.warehouse_wizard.warehouse_wizard.dto.TransactionDto;
+import com.warehouse_wizard.warehouse_wizard.mapper.TransactionMapper;
 import com.warehouse_wizard.warehouse_wizard.model.Transaction;
 import com.warehouse_wizard.warehouse_wizard.service.TransactionService;
 import com.warehouse_wizard.warehouse_wizard.utils.RequiresLoggedInUser;
@@ -18,15 +20,15 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
+    public ResponseEntity<List<TransactionDto>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
-        return ResponseEntity.ok(transactions);
+        return ResponseEntity.ok(TransactionMapper.mapToDtoList(transactions));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Transaction> getTransactionById(@PathVariable int id) {
+    public ResponseEntity<TransactionDto> getTransactionById(@PathVariable int id) {
         Transaction transaction = transactionService.getTransactionById(id);
-        return ResponseEntity.ok(transaction);
+        return ResponseEntity.ok(TransactionMapper.transactionToTransactionDto(transaction));
     }
 
     @DeleteMapping("/{id}")
@@ -37,14 +39,14 @@ public class TransactionController {
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<List<Transaction>> getTransactionsByProduct(@PathVariable int id) {
+    public ResponseEntity<List<TransactionDto>> getTransactionsByProduct(@PathVariable int id) {
         List<Transaction> transactions = transactionService.getTransactionsByProduct(id);
-        return ResponseEntity.ok(transactions);
+        return ResponseEntity.ok(TransactionMapper.mapToDtoList(transactions));
     }
 
     @GetMapping("/type/{transactionType}")
-    public ResponseEntity<List<Transaction>> getTransactionsByTransactionType(@PathVariable TransactionType transactionType) {
+    public ResponseEntity<List<TransactionDto>> getTransactionsByTransactionType(@PathVariable TransactionType transactionType) {
         List<Transaction> transactions = transactionService.getTransactionsByTransactionType(transactionType);
-        return ResponseEntity.ok(transactions);
+        return ResponseEntity.ok(TransactionMapper.mapToDtoList(transactions));
     }
 }
