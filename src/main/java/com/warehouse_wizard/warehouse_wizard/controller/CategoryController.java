@@ -17,17 +17,16 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    @RequiresLoggedInUser
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
         Category category = categoryService.getCategoryById(id);
         if (category != null) {
-            return new ResponseEntity<>(category, HttpStatus.OK);
+            return ResponseEntity.ok(category);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -46,7 +45,7 @@ public class CategoryController {
             @PathVariable int id,
             @RequestBody Category updatedCategory) {
         Category category = categoryService.updateCategory(id, updatedCategory);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return ResponseEntity.ok(category);
     }
 
     @DeleteMapping("/{id}")

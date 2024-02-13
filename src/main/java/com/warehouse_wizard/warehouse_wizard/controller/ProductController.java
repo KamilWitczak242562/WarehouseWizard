@@ -4,14 +4,14 @@ import com.warehouse_wizard.warehouse_wizard.model.Product;
 import com.warehouse_wizard.warehouse_wizard.service.ProductService;
 import com.warehouse_wizard.warehouse_wizard.utils.RequiresLoggedInUser;
 import lombok.AllArgsConstructor;
+import ognl.enhance.OrderedReturn;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-/***
- * Update response body to match web http responses
- */
 @RestController
 @RequestMapping("/api/product")
 @AllArgsConstructor
@@ -20,68 +20,71 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/belowMinimum")
-    public @ResponseBody List<Product> getProductsBelowMinimum(@RequestParam int quantity) {
-        return productService.getBelowMinimum(quantity);
+    public ResponseEntity<List<Product>> getProductsBelowMinimum(@RequestParam int quantity) {
+        List<Product> products = productService.getBelowMinimum(quantity);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody Product getProductById(@PathVariable int id) {
-        return productService.getById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+        Product product = productService.getById(id);
+        if (product == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(product);
+        }
     }
 
-    @GetMapping
-    public @ResponseBody Product getProductByName(@RequestParam String name) {
-        return productService.getProductByName(name);
-    }
-
-    /***
-     * To implement
-     */
     @PutMapping("/{id}")
     @RequiresLoggedInUser
-    public @ResponseBody Product updateProduct(@PathVariable int id, @RequestBody String mock) {
-        return new Product();
+    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestParam int category_id, @RequestBody Map<String, String> nameAndDesc, @RequestParam double price, @RequestParam int stockQuantity) {
+        Product product = productService.updateProduct(id, category_id, nameAndDesc.get("name"), nameAndDesc.get("description"), price, stockQuantity);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/allProducts")
-    public @ResponseBody List<Product> getAllProducts() {
-        return productService.getAll();
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.getAll();
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping("/addProduct")
     @RequiresLoggedInUser
-    public @ResponseBody Product addNewProduct(@RequestParam int category_id, @RequestBody Map<String, String> nameAndDesc, @RequestParam double price, @RequestParam int stockQuantity) {
-        return productService.addNewProduct(
-                category_id,
+    public ResponseEntity<Product> addNewProduct(@RequestParam int category_id, @RequestBody Map<String, String> nameAndDesc, @RequestParam double price, @RequestParam int stockQuantity) {
+        Product product = productService.addNewProduct(category_id,
                 nameAndDesc.get("name"),
                 nameAndDesc.get("description"),
                 price,
-                stockQuantity
-        );
+                stockQuantity);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
     @RequiresLoggedInUser
-    public @ResponseBody Product deleteProduct(@PathVariable int id, @RequestParam(required = false) String name) {
-        return productService.deleteProduct(id, name);
+    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}/addQuantity")
     @RequiresLoggedInUser
-    public @ResponseBody Product addQuantity(@PathVariable int id, @RequestParam(required = false) String name, @RequestParam int quantityToAdd) {
-        return productService.addQuantity(id, name, quantityToAdd);
+    public ResponseEntity<Product> addQuantity(@PathVariable int id, @RequestParam int quantityToAdd) {
+        Product product = productService.addQuantity(id, quantityToAdd);
+        return ResponseEntity.ok(product);
     }
 
     @PutMapping("/{id}/removeQuantity")
     @RequiresLoggedInUser
-    public @ResponseBody Product removeQuantity(@PathVariable int id, @RequestParam(required = false) String name, @RequestParam int quantityToRemove) {
-        return productService.removeQuantity(id, name, quantityToRemove);
+    public ResponseEntity<Product> removeQuantity(@PathVariable int id, @RequestParam int quantityToRemove) {
+        Product product = productService.removeQuantity(id, quantityToRemove);
+        return ResponseEntity.ok(product);
     }
 
     @PutMapping("/{id}/changePrice")
     @RequiresLoggedInUser
-    public @ResponseBody Product changePrice(@PathVariable int id, @RequestParam(required = false) String name, @RequestParam double price) {
-        return productService.changePrice(id, name, price);
+    public ResponseEntity<Product> changePrice(@PathVariable int id, @RequestParam double price) {
+        Product product = productService.changePrice(id, price);
+        return ResponseEntity.ok(product);
     }
 
 }

@@ -40,24 +40,23 @@ public class ProductService {
         return product;
     }
 
-    /***
-     * To implement
-     */
-    public Product updateProduct() {
-        return new Product();
+    public Product updateProduct(int id, int category_id, String name, String description, double price, int stock_quantity) {
+        Product existingProduct = productRepository.findById(id).orElse(null);
+        existingProduct.setCategory(categoryService.getCategoryById(category_id));
+        existingProduct.setName(name);
+        existingProduct.setDescription(description);
+        existingProduct.setPrice(price);
+        existingProduct.setStock_quantity(stock_quantity);
+        productRepository.save(existingProduct);
+        return existingProduct;
     }
 
-    public Product deleteProduct(int id, String name) {
-        Product product = getProductByIdOrName(id, name);
-        if (product == null) {
-            throw new WrongArgumentException("No such product!");
-        }
-        productRepository.delete(product);
-        return product;
+    public void deleteProduct(int id) {
+        productRepository.deleteById(id);
     }
 
-    public Product addQuantity(int id, String name, int quantityToAdd) {
-        Product product = getProductByIdOrName(id, name);
+    public Product addQuantity(int id, int quantityToAdd) {
+        Product product = productRepository.findById(id).orElse(null);
         product.setStock_quantity(product.getStock_quantity() + quantityToAdd);
         productRepository.save(product);
         Transaction transaction = new Transaction();
@@ -68,8 +67,8 @@ public class ProductService {
         return product;
     }
 
-    public Product removeQuantity(int id, String name, int quantityToRemove) {
-        Product product = getProductByIdOrName(id, name);
+    public Product removeQuantity(int id, int quantityToRemove) {
+        Product product = productRepository.findById(id).orElse(null);
         product.setStock_quantity(product.getStock_quantity() - quantityToRemove);
         productRepository.save(product);
         Transaction transaction = new Transaction();
@@ -80,22 +79,10 @@ public class ProductService {
         return product;
     }
 
-    public Product changePrice(int id, String name, double price) {
-        Product product = getProductByIdOrName(id, name);
+    public Product changePrice(int id, double price) {
+        Product product = productRepository.findById(id).orElse(null);
         product.setPrice(price);
         productRepository.save(product);
         return product;
-    }
-
-    public Product getProductByName(String name) {
-        return productRepository.findByName(name);
-    }
-
-    public Product getProductByIdOrName(int id, String name) {
-        if (name == null) {
-            return productRepository.findById(id).orElse(null);
-        } else {
-            return productRepository.findByName(name);
-        }
     }
 }

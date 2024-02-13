@@ -18,8 +18,9 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
-        return transactionService.getAllTransactions();
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/{id}")
@@ -32,18 +33,18 @@ public class TransactionController {
     @RequiresLoggedInUser
     public ResponseEntity<Void> deleteTransaction(@PathVariable int id) {
         transactionService.deleteTransaction(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/product/{id}")
     public ResponseEntity<List<Transaction>> getTransactionsByProduct(@PathVariable int id) {
         List<Transaction> transactions = transactionService.getTransactionsByProduct(id);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+        return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/type/{transactionType}")
     public ResponseEntity<List<Transaction>> getTransactionsByTransactionType(@PathVariable TransactionType transactionType) {
         List<Transaction> transactions = transactionService.getTransactionsByTransactionType(transactionType);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+        return ResponseEntity.ok(transactions);
     }
 }

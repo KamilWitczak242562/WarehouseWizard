@@ -42,7 +42,6 @@ public class CategoryService {
     }
 
     public void deleteCategory(int categoryId) {
-        Category category = getCategoryById(categoryId);
-        categoryRepository.delete(category);
+        categoryRepository.deleteById(categoryId);
     }
 }
