@@ -1,6 +1,7 @@
 package com.warehouse_wizard.warehouse_wizard.service;
 
 import com.mysql.cj.exceptions.WrongArgumentException;
+import com.warehouse_wizard.warehouse_wizard.mapper.ProductMapper;
 import com.warehouse_wizard.warehouse_wizard.model.Product;
 import com.warehouse_wizard.warehouse_wizard.model.Transaction;
 import com.warehouse_wizard.warehouse_wizard.repository.ProductRepository;
@@ -29,26 +30,15 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product addNewProduct(int category_id, String name, String description, double price, int stock_quantity) {
-        Product product = new Product();
-        product.setCategory(categoryService.getCategoryById(category_id));
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setStock_quantity(stock_quantity);
+    public Product addNewProduct(Product product) {
         productRepository.save(product);
         return product;
     }
 
-    public Product updateProduct(int id, int category_id, String name, String description, double price, int stock_quantity) {
-        Product existingProduct = productRepository.findById(id).orElse(null);
-        existingProduct.setCategory(categoryService.getCategoryById(category_id));
-        existingProduct.setName(name);
-        existingProduct.setDescription(description);
-        existingProduct.setPrice(price);
-        existingProduct.setStock_quantity(stock_quantity);
-        productRepository.save(existingProduct);
-        return existingProduct;
+    public Product updateProduct(int id, Product product) {
+        productRepository.deleteById(id);
+        productRepository.save(product);
+        return product;
     }
 
     public void deleteProduct(int id) {

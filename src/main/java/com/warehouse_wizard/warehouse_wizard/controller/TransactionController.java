@@ -28,7 +28,11 @@ public class TransactionController {
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDto> getTransactionById(@PathVariable int id) {
         Transaction transaction = transactionService.getTransactionById(id);
-        return ResponseEntity.ok(TransactionMapper.transactionToTransactionDto(transaction));
+        if (transaction == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(TransactionMapper.transactionToTransactionDto(transaction));
+        }
     }
 
     @DeleteMapping("/{id}")
