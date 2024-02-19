@@ -10,7 +10,6 @@ public class ProductMapper {
 
     public static Product productDtoToProduct(ProductDto productDto) {
         Product product = new Product();
-        product.setProduct_id(productDto.getProduct_id());
         product.setDescription(productDto.getDescription());
         product.setStock_quantity(productDto.getStock_quantity());
         product.setCategory(CategoryMapper.categoryDtoToCategory(productDto.getCategory()));
@@ -21,7 +20,6 @@ public class ProductMapper {
 
     public static ProductDto productToProductDto(Product product) {
         ProductDto productDto = new ProductDto();
-        productDto.setProduct_id(product.getProduct_id());
         productDto.setDescription(product.getDescription());
         productDto.setStock_quantity(product.getStock_quantity());
         productDto.setCategory(CategoryMapper.categoryToCategoryDto(product.getCategory()));

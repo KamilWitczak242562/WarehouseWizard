@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-    private int product_id;
     private CategoryDto category;
     private String name;
     private String description;

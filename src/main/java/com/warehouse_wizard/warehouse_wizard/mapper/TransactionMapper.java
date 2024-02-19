@@ -10,7 +10,6 @@ public class TransactionMapper {
 
     public static Transaction transactionDtoToTransaction(TransactionDto transactionDto) {
         Transaction transaction = new Transaction();
-        transaction.setTransaction_id(transactionDto.getTransaction_id());
         transaction.setQuantity(transactionDto.getQuantity());
         transaction.setProduct(ProductMapper.productDtoToProduct(transactionDto.getProduct()));
         transaction.setTransactionDate(transactionDto.getTransactionDate());
@@ -20,7 +19,6 @@ public class TransactionMapper {
 
     public static TransactionDto transactionToTransactionDto(Transaction transaction) {
         TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setTransaction_id(transaction.getTransaction_id());
         transactionDto.setQuantity(transaction.getQuantity());
         transactionDto.setProduct(ProductMapper.productToProductDto(transaction.getProduct()));
         transactionDto.setTransactionDate(transaction.getTransactionDate());

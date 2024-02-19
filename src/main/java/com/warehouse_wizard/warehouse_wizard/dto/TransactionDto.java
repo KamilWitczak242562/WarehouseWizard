@@ -13,7 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDto {
-    private int transaction_id;
     private ProductDto product;
     private int quantity;
     private TransactionType transactionType;

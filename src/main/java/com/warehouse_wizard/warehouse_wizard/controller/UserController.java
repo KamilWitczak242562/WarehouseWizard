@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 
-/***
- * Update response body to match web http responses
- */
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -24,7 +21,6 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/allUsers")
-    @RequiresLoggedInUser
     public ResponseEntity<Map<String, Integer>> getUsers() {
         Map<String, Integer> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
