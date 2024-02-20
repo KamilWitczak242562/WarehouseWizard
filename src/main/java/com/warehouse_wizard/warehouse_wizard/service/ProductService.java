@@ -5,8 +5,11 @@ import com.warehouse_wizard.warehouse_wizard.mapper.ProductMapper;
 import com.warehouse_wizard.warehouse_wizard.model.Product;
 import com.warehouse_wizard.warehouse_wizard.model.Transaction;
 import com.warehouse_wizard.warehouse_wizard.repository.ProductRepository;
+import com.warehouse_wizard.warehouse_wizard.utils.LoggedUser;
 import com.warehouse_wizard.warehouse_wizard.utils.TransactionType;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
     private final TransactionService transactionService;
+    private final LoggedUser loggedUser;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public List<Product> getBelowMinimum(int quantity) {
         return productRepository.getBelowMinimum(quantity);
@@ -32,6 +36,7 @@ public class ProductService {
 
     public Product addNewProduct(Product product) {
         productRepository.save(product);
+        logger.info("New product added, name: " + product.getName() + ", id " + product.getProduct_id() + " by user " + loggedUser.getLoggedUser().getEmail());
         return product;
     }
 
@@ -43,6 +48,7 @@ public class ProductService {
 
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
+        logger.info("Product deleted with id " + id + " by user " + loggedUser.getLoggedUser().getEmail());
     }
 
     public Product addQuantity(int id, int quantityToAdd) {
@@ -73,6 +79,7 @@ public class ProductService {
         Product product = productRepository.findById(id).orElse(null);
         product.setPrice(price);
         productRepository.save(product);
+        logger.info("Product price changed to " + price + ", for id " + product.getProduct_id() + " by user " + loggedUser.getLoggedUser().getEmail());
         return product;
     }
 }

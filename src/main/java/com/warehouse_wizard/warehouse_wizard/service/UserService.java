@@ -7,6 +7,8 @@ import com.warehouse_wizard.warehouse_wizard.utils.LoggedUser;
 import lombok.AllArgsConstructor;
 import ognl.MethodFailedException;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final LoggedUser loggedUser;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
     public User registerUser(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
@@ -28,6 +32,7 @@ public class UserService {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userRepository.save(user);
         loggedUser.setLoggedUser(user);
+        logger.info("User " + user.getEmail() + " registered");
         return user;
     }
 
@@ -41,6 +46,7 @@ public class UserService {
         String password = userRepository.findByEmail(user.getEmail()).getPassword();
         if (BCrypt.checkpw(user.getPassword(), password)) {
             loggedUser.setLoggedUser(user);
+            logger.info("User " + user.getEmail() + " logged in");
             return user;
         } else {
             throw new WrongArgumentException("Wrong password!");
@@ -61,6 +67,7 @@ public class UserService {
             throw new WrongArgumentException("User is not logged in");
         }
         loggedUser.logOut();
+        logger.info("User logged out");
         return loggedUser.getLoggedUser() == null;
     }
 }
