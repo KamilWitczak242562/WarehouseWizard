@@ -8,7 +8,7 @@
     </appender>
 
     <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/warehouse.log</file>
+        <file>G:\warehouse_wizard\src\main\resources\log\warehouse.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
@@ -21,9 +21,12 @@
         </rollingPolicy>
     </appender>
 
+    <logger name="com.warehouse_wizard.warehouse_wizard.service" level="INFO" additivity="false">
+        <appender-ref ref="File" />
+    </logger>
+
     <root level="info">
         <appender-ref ref="Console" />
-        <appender-ref ref="File" />
     </root>
 
 </configuration>
